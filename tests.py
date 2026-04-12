@@ -14,26 +14,19 @@ class TestBooksCollector:
             books_collector.add_new_book(book_name)
         assert len(books_collector.get_books_genre()) == 2
 
-    @pytest.mark.parametrize('book_name, genre', [
-        (data.BOOK_COMEDY_1, data.COMEDY),
-        (data.BOOK_FANTASY, ''),  # пустая строка = нет жанра
-    ])
-    def test_books_genre_is_empty(self, books_collector, book_name, genre):
+    def test_books_genre_is_empty(self, books_collector):
+        book_name = data.BOOK_FANTASY
         books_collector.add_new_book(book_name)
+        assert books_collector.get_book_genre(book_name) == ''
 
-        if genre: # проверяем, если genre вернул False, не добавляем жанр
-            books_collector.set_book_genre(book_name, genre)
-        assert books_collector.get_book_genre(book_name) == genre
-
-    @pytest.mark.parametrize('book_name, genre, add_book, expected_result', [
-        (data.BOOK_COMEDY_1, data.COMEDY, True, 1),
-        ('', '', False, 0)
+    @pytest.mark.parametrize('book_name, genre, expected_result', [
+        (data.BOOK_COMEDY_1, data.COMEDY, 1),
+        ('', '', 0)
     ])
-    def test_dictionary_books_genre_is_not_null(self, books_collector, book_name, genre, add_book,
+    def test_dictionary_books_genre_is_not_null(self, books_collector, book_name, genre,
                                                 expected_result):
-        if add_book:
-            books_collector.add_new_book(book_name)
-            books_collector.set_book_genre(book_name, genre)
+        books_collector.add_new_book(book_name)
+        books_collector.set_book_genre(book_name, genre)
         assert len(books_collector.get_books_genre()) == expected_result
 
     def test_book_genre_is_correct(self, books_collector):
@@ -53,25 +46,28 @@ class TestBooksCollector:
     def test_books_with_specific_genre_horror(self, books_collector, create_books_and_genre):
         assert books_collector.get_books_with_specific_genre(data.HORROR) == [data.BOOK_HORROR_1, data.BOOK_HORROR_2]
 
-    @pytest.mark.parametrize('book_name, book_exists, expected_result', [
-        (data.BOOK_HORROR_1, True, True),  # книга существует
-        ('Bий', False, False),  # книга не существует
-    ])
-    def test_add_book_in_favorites(self, books_collector, book_name, book_exists, expected_result):
-        if book_exists:
-            books_collector.add_new_book(book_name)
-
+    def test_add_book_in_favorites(self, books_collector):
+        book_name = data.BOOK_FANTASY
+        books_collector.add_new_book(book_name)
         books_collector.add_book_in_favorites(book_name)
-        assert (book_name in books_collector.get_list_of_favorites_books()) == expected_result
+        assert (book_name in books_collector.get_list_of_favorites_books()) == True
 
-    @pytest.mark.parametrize('book_name, book_exists, expected_result', [
-        (data.BOOK_HORROR_1, True, False),  # книга существует и ее удалили
-        ('Bий', False, False),  # книга не существует
-    ])
-    def test_delete_book_from_favorites(self, books_collector, book_name, book_exists, expected_result):
-        if book_exists:
-            books_collector.add_new_book(book_name)
+    def test_add_book_in_favorites_that_does_not_exist(self, books_collector):
+        book_name = data.BOOK_FANTASY
+        books_collector.add_book_in_favorites(book_name)
+        assert (book_name in books_collector.get_list_of_favorites_books()) == False
 
+    def test_delete_book_from_favorites(self, books_collector):
+        book_name = data.BOOK_FANTASY
+        books_collector.add_new_book(book_name)
         books_collector.add_book_in_favorites(book_name)
         books_collector.delete_book_from_favorites(book_name)
-        assert (book_name in books_collector.get_list_of_favorites_books()) == expected_result
+        assert (book_name in books_collector.get_list_of_favorites_books()) == False
+
+    def test_get_books_genre_success(self, books_collector, create_books_and_genre):
+        assert books_collector.get_books_genre() is not None
+
+    def test_get_list_of_favorites_books_success(self, books_collector, create_books_and_genre):
+        book_name = data.BOOK_FANTASY
+        books_collector.add_book_in_favorites(book_name)
+        assert books_collector.get_list_of_favorites_books() == [book_name]

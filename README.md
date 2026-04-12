@@ -25,5 +25,14 @@
 # test_add_book_in_favorites:
     Кореектное добавление книг в избранное. Книга Существует. Книга не существует
 
+# test_add_book_in_favorites_that_does_not_exist:
+    Добавление не существующей книги в избранное
+
 # test_delete_book_from_favorites: 
     Корректное удаление книги из избранного
+
+# test_get_books_genre_success:
+    Получить заполненный словарь с книгами и жанрами
+
+# test_get_list_of_favorites_books_success:
+    Получить заполненный словарь с избранными
