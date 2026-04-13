@@ -65,7 +65,8 @@ class TestBooksCollector:
         assert (book_name in books_collector.get_list_of_favorites_books()) == False
 
     def test_get_books_genre_success(self, books_collector, create_books_and_genre):
-        assert books_collector.get_books_genre() is not None
+        expected_dict = create_books_and_genre
+        assert books_collector.get_books_genre() == expected_dict
 
     def test_get_list_of_favorites_books_success(self, books_collector, create_books_and_genre):
         book_name = data.BOOK_FANTASY
